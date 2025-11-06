@@ -19,8 +19,4 @@
     <ProjectReference Include="..\BarberBookingApp.Services\BarberBookingApp.Services.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
 </Project>
