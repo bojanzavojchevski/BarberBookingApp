@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BarberBookingApp.Repository.Interfaces
 {
-    public interface IServiceRepository : IGenericRepository<ServiceItem>
+    public interface IServiceItemRepository : IGenericRepository<ServiceItem>
     {
     }
 }

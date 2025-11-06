@@ -11,9 +11,9 @@ namespace BarberBookingApp.Services.Implementations
 {
     public class ServiceItemService : IServiceItemService
     {
-        private readonly IServiceRepository _serviceRepository;
+        private readonly IServiceItemRepository _serviceRepository;
 
-        public ServiceItemService(IServiceRepository serviceRepository) 
+        public ServiceItemService(IServiceItemRepository serviceRepository) 
         {
             _serviceRepository = serviceRepository;
         }
