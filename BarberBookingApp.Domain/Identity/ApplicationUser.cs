@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BarberBookingApp.Domain.Identity
 {
-    public class ApplicationUser : IdentityUser
+    public class ApplicationUser : IdentityUser<Guid>
     {
         public string FullName { get; set; }
         public ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();

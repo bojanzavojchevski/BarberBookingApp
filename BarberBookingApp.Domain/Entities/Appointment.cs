@@ -10,7 +10,7 @@ namespace BarberBookingApp.Domain.Entities
 {
     public class Appointment : BaseEntity
     {
-        public Guid ServiceId { get; set; }
+        public Guid ServiceItemId { get; set; }
         public ServiceItem ServiceItems { get; set; }
 
         public Guid UserId { get; set; }
