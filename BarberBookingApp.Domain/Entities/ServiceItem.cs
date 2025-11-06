@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BarberBookingApp.Domain.Entities
 {
-    public class Service : BaseEntity
+    public class ServiceItem : BaseEntity
     {
         public string Name { get; set; }
         public int Price { get; set; }

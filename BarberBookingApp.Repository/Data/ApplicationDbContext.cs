@@ -11,7 +11,7 @@ namespace BarberBookingApp.Web.Data
         {
         }
 
-        public DbSet<Service> Services { get; set; }
+        public DbSet<ServiceItem> ServiceItems { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
     }
 }
