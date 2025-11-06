@@ -1,4 +1,7 @@
 using BarberBookingApp.Domain.Identity;
+using BarberBookingApp.Repository.Implementations;
+using BarberBookingApp.Repository.Interfaces;
+using BarberBookingApp.Services.Implementations;
 using BarberBookingApp.Services.Interfaces;
 using BarberBookingApp.Web.Data;
 using Microsoft.AspNetCore.Identity;
@@ -16,7 +19,12 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddScoped<, >
+builder.Services.AddScoped<IServiceItemRepository, ServiceItemRepository>();
+builder.Services.AddScoped<IServiceItemService, ServiceItemService>();
+
+builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
+builder.Services.AddScoped<IAppointmentService, AppointmentService>();
+
 
 var app = builder.Build();
 
