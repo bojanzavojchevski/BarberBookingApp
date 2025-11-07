@@ -12,6 +12,6 @@ namespace BarberBookingApp.Domain.Entities
         public int Price { get; set; }
         public int Duration { get; set; }
 
-        public ICollection<Appointment> Appointments { get; set; }
+        public virtual ICollection<Appointment>? Appointments { get; set; }
     }
 }
