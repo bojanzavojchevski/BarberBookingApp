@@ -14,5 +14,6 @@ namespace BarberBookingApp.Services.Interfaces
         Task AddAsync(Appointment appointment);
         Task UpdateAsync(Appointment appointment);
         Task DeleteAsync(Guid id);
+        Task SaveChangesAsync();
     }
 }
