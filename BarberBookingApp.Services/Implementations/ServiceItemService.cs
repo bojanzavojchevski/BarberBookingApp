@@ -24,7 +24,7 @@ namespace BarberBookingApp.Services.Implementations
             return await _serviceRepository.GetAllAsync();
         }
 
-        public async Task<ServiceItem?> GetByIdAsync(Guid id)
+        public async Task<ServiceItem?> GetByIdAsync(Guid? id)
         {
             return await _serviceRepository.GetByIdAsync(id);
         }
@@ -49,6 +49,11 @@ namespace BarberBookingApp.Services.Implementations
                 _serviceRepository.Delete(service);
                 await _serviceRepository.SaveChangesAsync();
             }
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            await _serviceRepository.SaveChangesAsync();
         }
     }
 }

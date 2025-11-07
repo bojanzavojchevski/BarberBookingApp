@@ -23,7 +23,7 @@ namespace BarberBookingApp.Services.Implementations
             return await _appointmentRepository.GetAllAsync();
         }
 
-        public async Task<Appointment?> GetByIdAsync(Guid id)
+        public async Task<Appointment?> GetByIdAsync(Guid? id)
         {
             return await _appointmentRepository.GetByIdAsync(id);
         }
