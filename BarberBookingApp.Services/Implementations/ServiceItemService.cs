@@ -50,5 +50,10 @@ namespace BarberBookingApp.Services.Implementations
                 await _serviceRepository.SaveChangesAsync();
             }
         }
+
+        public async Task SaveChangesAsync()
+        {
+            await _serviceRepository.SaveChangesAsync();
+        }
     }
 }
