@@ -16,4 +16,8 @@
     <ProjectReference Include="..\BarberBookingApp.Domain\BarberBookingApp.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+  </ItemGroup>
+
 </Project>
