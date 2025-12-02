@@ -6,6 +6,9 @@ using BarberBookingApp.Services.Interfaces;
 using BarberBookingApp.Web.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using BarberBookingApp.Services;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,15 +18,30 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+//builder.Services.AddIdentity<ApplicationUser, IdentityRole<Guid>>(options =>
+//{
+//    options.SignIn.RequireConfirmedAccount = true;
+//})
+//.AddEntityFrameworkStores<ApplicationDbContext>()
+//.AddDefaultTokenProviders();
+
+builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
+    options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages();
+
+
+
+
 
 builder.Services.AddScoped<IServiceItemRepository, ServiceItemRepository>();
 builder.Services.AddScoped<IServiceItemService, ServiceItemService>();
 
 builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
 builder.Services.AddScoped<IAppointmentService, AppointmentService>();
+
+builder.Configuration.AddUserSecrets<Program>();
 
 
 var app = builder.Build();
@@ -45,6 +63,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
