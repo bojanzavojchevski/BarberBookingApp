@@ -19,7 +19,7 @@ namespace BarberBookingApp.Services.Implementations
         }
 
 
-        public async Task<IEnumerable<ServiceItem>> GetAllAsync()
+        public async Task<ICollection<ServiceItem>> GetAllAsync()
         {
             return await _serviceRepository.GetAllAsync();
         }
