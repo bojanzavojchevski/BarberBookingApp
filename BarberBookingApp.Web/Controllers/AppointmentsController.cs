@@ -8,16 +8,19 @@ using Microsoft.EntityFrameworkCore;
 using BarberBookingApp.Domain.Entities;
 using BarberBookingApp.Web.Data;
 using BarberBookingApp.Services.Interfaces;
+using BarberBookingApp.Domain.Enums;
 
 namespace BarberBookingApp.Web.Controllers
 {
     public class AppointmentsController : Controller
     {
         private readonly IAppointmentService _service;
+        public readonly IServiceItemService _serviceItemService;
 
-        public AppointmentsController(IAppointmentService service)
+        public AppointmentsController(IAppointmentService service, IServiceItemService serviceItemService)
         {
             _service = service;
+            _serviceItemService = serviceItemService;
         }
 
         // GET: Appointments
@@ -45,10 +48,11 @@ namespace BarberBookingApp.Web.Controllers
         }
 
         // GET: Appointments/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewData["ServiceItemId"] = new SelectList(_context.ServiceItems, "Id", "Name");
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "FullName");
+            var services = await _serviceItemService.GetAllAsync();
+            ViewBag.ServiceItemId = new SelectList(services, "Id", "Name");
+
             return View();
         }
 
@@ -57,18 +61,21 @@ namespace BarberBookingApp.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ServiceItemId,UserId,AppointmentTime,Status,Id")] Appointment appointment)
+        public async Task<IActionResult> Create(Appointment appointment)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                appointment.Id = Guid.NewGuid();
-                _context.Add(appointment);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return View(appointment);
             }
-            ViewData["ServiceItemId"] = new SelectList(_context.ServiceItems, "Id", "Name", appointment.ServiceItemId);
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "FullName", appointment.UserId);
-            return View(appointment);
+
+
+            appointment.Status = AppointmentStatus.Booked;
+
+            await _service.AddAsync(appointment);
+            await _service.SaveChangesAsync();
+
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Appointments/Edit/5
@@ -79,13 +86,14 @@ namespace BarberBookingApp.Web.Controllers
                 return NotFound();
             }
 
-            var appointment = await _context.Appointments.FindAsync(id);
+            var appointment = await _service.GetByIdAsync(id);
+
             if (appointment == null)
             {
                 return NotFound();
             }
-            ViewData["ServiceItemId"] = new SelectList(_context.ServiceItems, "Id", "Name", appointment.ServiceItemId);
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "FullName", appointment.UserId);
+
+
             return View(appointment);
         }
 
@@ -94,35 +102,21 @@ namespace BarberBookingApp.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("ServiceItemId,UserId,AppointmentTime,Status,Id")] Appointment appointment)
+        public async Task<IActionResult> Edit(Guid id, Appointment appointment)
         {
             if (id != appointment.Id)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(appointment);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!AppointmentExists(appointment.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                return View(appointment);
             }
-            ViewData["ServiceItemId"] = new SelectList(_context.ServiceItems, "Id", "Name", appointment.ServiceItemId);
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "FullName", appointment.UserId);
+
+            await _service.UpdateAsync(appointment);
+            await _service.SaveChangesAsync();
+
             return View(appointment);
         }
 
@@ -134,10 +128,7 @@ namespace BarberBookingApp.Web.Controllers
                 return NotFound();
             }
 
-            var appointment = await _context.Appointments
-                .Include(a => a.ServiceItems)
-                .Include(a => a.User)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var appointment = await _service.GetByIdAsync(id);
             if (appointment == null)
             {
                 return NotFound();
@@ -151,19 +142,19 @@ namespace BarberBookingApp.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var appointment = await _context.Appointments.FindAsync(id);
+            var appointment = await _service.GetByIdAsync(id);
             if (appointment != null)
             {
-                _context.Appointments.Remove(appointment);
+                await _service.DeleteAsync(appointment.Id);
             }
 
-            await _context.SaveChangesAsync();
+            await _service.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool AppointmentExists(Guid id)
-        {
-            return _context.Appointments.Any(e => e.Id == id);
-        }
+        //private bool AppointmentExists(Guid id)
+        //{
+        //    return _context.Appointments.Any(e => e.Id == id);
+        //}
     }
 }
