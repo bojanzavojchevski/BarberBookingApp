@@ -9,7 +9,7 @@ namespace BarberBookingApp.Services.Interfaces
 {
     public interface IServiceItemService
     {
-        Task<IEnumerable<ServiceItem>> GetAllAsync();
+        Task<ICollection<ServiceItem>> GetAllAsync();
         Task<ServiceItem?> GetByIdAsync(Guid? id);
         Task AddAsync(ServiceItem service);
         Task UpdateAsync(ServiceItem service);

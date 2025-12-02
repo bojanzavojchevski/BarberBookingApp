@@ -10,8 +10,8 @@ namespace BarberBookingApp.Repository.Interfaces
 {
     public interface IAppointmentRepository : IGenericRepository<Appointment>
     {
-        //Task<IEnumerable<Appointment>> GetAppointmentByUserAsync(Guid userId);
-        //Task<IEnumerable<Appointment>> GetAppointmentsByDateAsync(DateTime date);
+        //Task<ICollection<Appointment>> GetAppointmentByUserAsync(Guid userId);
+        //Task<ICollection<Appointment>> GetAppointmentsByDateAsync(DateTime date);
         //Task<bool> IsSlotAvailableAsync(Guid serviceId, DateTime appointmentDate);
     }
 }
