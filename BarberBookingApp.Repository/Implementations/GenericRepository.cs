@@ -1,5 +1,5 @@
 ﻿using BarberBookingApp.Repository.Interfaces;
-using BarberBookingApp.Web.Data;
+using BarberBookingApp.Repository.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;

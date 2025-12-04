@@ -1,6 +1,6 @@
 ﻿using BarberBookingApp.Domain.Entities;
 using BarberBookingApp.Repository.Interfaces;
-using BarberBookingApp.Web.Data;
+using BarberBookingApp.Repository.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;

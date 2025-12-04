@@ -6,12 +6,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BarberBookingApp.Domain.Entities;
-using BarberBookingApp.Web.Data;
+using BarberBookingApp.Repository.Data;
 using BarberBookingApp.Services.Interfaces;
 using BarberBookingApp.Domain.Enums;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BarberBookingApp.Web.Controllers
 {
+    [Authorize]
     public class AppointmentsController : Controller
     {
         private readonly IAppointmentService _service;
@@ -65,17 +68,30 @@ namespace BarberBookingApp.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
+                var services = await _serviceItemService.GetAllAsync();
+                ViewBag.ServiceItemId = new SelectList(services, "Id", "Name"); 
+
                 return View(appointment);
             }
 
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userIdString == null)
+            {
+                return RedirectToPage("/Account/Login", new { area = "Identity" });
+            }
 
-            appointment.Status = AppointmentStatus.Booked;
+            appointment.UserId = Guid.Parse(userIdString);
+
+           
+            appointment.Status = AppointmentStatus.Pending;
+            appointment.CreatedAt = DateTime.UtcNow;
 
             await _service.AddAsync(appointment);
             await _service.SaveChangesAsync();
 
-
             return RedirectToAction(nameof(Index));
+
+
         }
 
         // GET: Appointments/Edit/5
@@ -149,6 +165,93 @@ namespace BarberBookingApp.Web.Controllers
             }
 
             await _service.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Confirm(Guid id)
+        {
+            var appointment = await _service.GetByIdAsync(id);
+            if (appointment == null)
+            {
+                return NotFound();
+            }
+
+            if (appointment.Status != AppointmentStatus.Pending)
+            {
+                return BadRequest("Only pending appointments can be confirmed!");
+            }
+
+            appointment.Status = AppointmentStatus.Confirmed;
+            appointment.ConfirmedAt = DateTime.UtcNow;
+
+            await _service.UpdateAsync(appointment);
+            await _service.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Decline(Guid id, string? reason)
+        {
+            Appointment? appointment = await _service.GetByIdAsync(id);
+            if (appointment == null)
+            {
+                return NotFound();
+            }
+
+            if (appointment.Status != AppointmentStatus.Pending)
+            {
+                return BadRequest("Only pending appointments can be declined.");
+            }
+
+            appointment.Status = AppointmentStatus.Declined;
+            appointment.DeclineReason = reason;
+
+            await _service.UpdateAsync(appointment);
+            await _service.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Cancel(Guid id)
+        {
+            Appointment? appointment = await _service.GetByIdAsync(id);
+            if (appointment == null)
+            {
+                return NotFound();
+            }
+
+            String? userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userIdString == null)
+            {
+                return Challenge();
+            }
+
+            Guid userId = Guid.Parse(userIdString);
+
+            if(appointment.UserId != userId)
+            {
+                return Forbid();
+            }
+
+            if (appointment.Status == AppointmentStatus.Declined ||
+                appointment.Status == AppointmentStatus.Cancelled)
+            {
+                return BadRequest("This appointment cannot be cancelled.");
+            }
+
+            appointment.Status = AppointmentStatus.Cancelled;
+
+            await _service.UpdateAsync(appointment);
+            await _service.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
 

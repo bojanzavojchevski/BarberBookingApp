@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<BarberBookingApp.Domain.Entities.Appointment>
+@using BarberBookingApp.Domain.Enums;
 
 @{
     ViewData["Title"] = "Index";
@@ -43,11 +44,35 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Status)
             </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
+                <th>Actions</th>
+                ...
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+
+                    @if (item.Status == AppointmentStatus.Pending)
+                    {
+                        <form asp-action="Confirm" method="post" style="display:inline">
+                            <input type="hidden" name="id" value="@item.Id" />
+                            <button type="submit" class="btn btn-sm btn-success">Confirm</button>
+                        </form>
+
+                        <form asp-action="Decline" method="post" style="display:inline">
+                            <input type="hidden" name="id" value="@item.Id" />
+                            <button type="submit" class="btn btn-sm btn-danger">Decline</button>
+                        </form>
+                    }
+
+                    @if (item.Status == AppointmentStatus.Pending || item.Status == AppointmentStatus.Confirmed)
+                    {
+                        <form asp-action="Cancel" method="post" style="display:inline">
+                            <input type="hidden" name="id" value="@item.Id" />
+                            <button type="submit" class="btn btn-sm btn-warning">Cancel</button>
+                        </form>
+                    }
+                </td>
+
         </tr>
 }
     </tbody>

@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BarberBookingApp.Domain.Entities;
-using BarberBookingApp.Web.Data;
+using BarberBookingApp.Repository.Data;
 using BarberBookingApp.Services.Interfaces;
 
 namespace BarberBookingApp.Web.Controllers

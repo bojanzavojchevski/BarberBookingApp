@@ -180,7 +180,10 @@ namespace BarberBookingApp.Repository.Migrations
                     ServiceItemId = table.Column<Guid>(type: "uuid", nullable: false),
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),
                     AppointmentTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Status = table.Column<int>(type: "integer", nullable: false)
+                    Status = table.Column<int>(type: "integer", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    ConfirmedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    DeclineReason = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
