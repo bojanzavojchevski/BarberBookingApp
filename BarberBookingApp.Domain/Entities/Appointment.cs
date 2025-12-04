@@ -14,9 +14,16 @@ namespace BarberBookingApp.Domain.Entities
         public ServiceItem ServiceItems { get; set; }
 
         public Guid UserId { get; set; }
-        public ApplicationUser? User { get; set; }
+        public ApplicationUser User { get; set; }
 
         public DateTime AppointmentTime { get; set; }
-        public AppointmentStatus Status { get; set; } = AppointmentStatus.Booked;
+
+        public AppointmentStatus Status { get; set; } = AppointmentStatus.Pending;
+
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime? ConfirmedAt { get; set; }
+        public string? DeclineReason { get; set; }
+
+
     }
 }

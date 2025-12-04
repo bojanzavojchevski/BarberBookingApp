@@ -8,8 +8,9 @@ namespace BarberBookingApp.Domain.Enums
 {
     public enum AppointmentStatus
     {
-        Booked,
-        Cancelled,
-        Completed
+        Pending,
+        Confirmed,
+        Declined,
+        Cancelled
     }
 }

@@ -1,7 +1,7 @@
 ﻿using BarberBookingApp.Domain.Entities;
 using BarberBookingApp.Domain.Enums;
 using BarberBookingApp.Repository.Interfaces;
-using BarberBookingApp.Web.Data;
+using BarberBookingApp.Repository.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
