@@ -1,4 +1,4 @@
-﻿@model BarberBookingApp.Domain.Entities.Appointment
+﻿@model BarberBookingApp.Web.ViewModels.CreateAppointmentViewModel
 
 @{
     ViewData["Title"] = "Create";
@@ -18,18 +18,9 @@
                 <select asp-for="ServiceItemId" class ="form-control" asp-items="ViewBag.ServiceItemId"></select>
             </div>
             <div class="form-group">
-                <label asp-for="UserId" class="control-label"></label>
-                <select asp-for="UserId" class ="form-control" asp-items="ViewBag.UserId"></select>
-            </div>
-            <div class="form-group">
                 <label asp-for="AppointmentTime" class="control-label"></label>
                 <input asp-for="AppointmentTime" class="form-control" />
                 <span asp-validation-for="AppointmentTime" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Status" class="control-label"></label>
-                <select asp-for="Status" class="form-control"></select>
-                <span asp-validation-for="Status" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

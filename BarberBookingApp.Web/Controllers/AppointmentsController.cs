@@ -11,6 +11,7 @@ using BarberBookingApp.Services.Interfaces;
 using BarberBookingApp.Domain.Enums;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using BarberBookingApp.Web.ViewModels;
 
 namespace BarberBookingApp.Web.Controllers
 {
@@ -56,6 +57,7 @@ namespace BarberBookingApp.Web.Controllers
             var services = await _serviceItemService.GetAllAsync();
             ViewBag.ServiceItemId = new SelectList(services, "Id", "Name");
 
+            var model = new CreateAppointmentViewModel();
             return View();
         }
 
@@ -64,14 +66,14 @@ namespace BarberBookingApp.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Appointment appointment)
+        public async Task<IActionResult> Create(CreateAppointmentViewModel model)
         {
             if (!ModelState.IsValid)
             {
                 var services = await _serviceItemService.GetAllAsync();
                 ViewBag.ServiceItemId = new SelectList(services, "Id", "Name"); 
 
-                return View(appointment);
+                return View(model);
             }
 
             var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -80,11 +82,17 @@ namespace BarberBookingApp.Web.Controllers
                 return RedirectToPage("/Account/Login", new { area = "Identity" });
             }
 
-            appointment.UserId = Guid.Parse(userIdString);
+            var localTime = model.AppointmentTime;
+            var utcTime = DateTime.SpecifyKind(localTime, DateTimeKind.Local).ToUniversalTime();
 
-           
-            appointment.Status = AppointmentStatus.Pending;
-            appointment.CreatedAt = DateTime.UtcNow;
+            var appointment = new Appointment
+            {
+                ServiceItemId = model.ServiceItemId,
+                AppointmentTime = utcTime,
+                UserId = Guid.Parse(userIdString),
+                Status = AppointmentStatus.Pending,
+                CreatedAt = DateTime.UtcNow,
+            };
 
             await _service.AddAsync(appointment);
             await _service.SaveChangesAsync();
